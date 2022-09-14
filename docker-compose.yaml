@@ -35,5 +35,5 @@ services:
       - postgres:postgres
 
     environment:
-      PGADMIN_DEFAULT_EMAIL: 'marcelo@email.com'
-      PGADMIN_DEFAULT_PASSWORD: 'senha'
+      PGADMIN_DEFAULT_EMAIL: 'luan@tcc.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
