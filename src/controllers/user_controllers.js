@@ -45,7 +45,7 @@ module.exports = class profile_controllers{
             return res.status(400).send({error_message: "username or password is incorrect"});
         }
 
-        const token_info = {username, user_type: user.user_type};
+        const token_info = {username: user.username, user_type: user.user_type};
         const access_token = jwt.sign(token_info, process.env.JWT_SECRET);
 
         res.status(200).send({

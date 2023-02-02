@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "start": "node app.js"
+        "start": "node app.js",
+        "dev": "npx nodemon app.js"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
@@ -10,6 +11,7 @@
         "fuzzy-search": "^3.2.1",
         "jsonwebtoken": "^8.5.1",
         "multer": "^1.4.4",
+        "nodemon": "^2.0.20",
         "pg": "^8.7.3"
     }
 }
