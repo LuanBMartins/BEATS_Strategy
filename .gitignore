@@ -2,3 +2,7 @@ src/backend/node_modules
 src/backend/.env
 pgdata
 src/node_modules
+
+.env
+node_modules/
+
