@@ -48,8 +48,8 @@ function preprocessAddRequestForm(req, res, next){
     const infosec_attributes = ['c', 'i', 'a', 'authn', 'authz', 'acc', 'nr'];
 
     for(let attr of infosec_attributes){
-        const bool_string = req.body[attr].toUpperCase();
-        if(bool_string === "TRUE" || bool_string === "FALSE"){
+        const bool_string = req.body[attr]
+        if(bool_string === true || bool_string === false){
             req.body[attr] = bool_string === "TRUE";
         }
         else{
@@ -57,7 +57,7 @@ function preprocessAddRequestForm(req, res, next){
         }
     }
 
-    req.body.aliases = JSON.parse(req.body.aliases);
+    // req.body.aliases = JSON.parse(req.body.aliases);
     if(!Array.isArray(req.body.aliases)){
         return res.status(400).send({error_message: 'aliases must be written as an array'});
     }

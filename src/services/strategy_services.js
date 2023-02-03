@@ -130,7 +130,7 @@ module.exports = class strategy_services{
 
     static async getStrategyDocumentation(documentation_path){
         try{
-            const data = await fs.readFile(process.env.PATH_DOCUMENTATION + documentation_path);
+            const data = await fs.readFile(process.env.PATH_REQUEST + documentation_path);
             const documentation = JSON.parse(data);
 
             return documentation;

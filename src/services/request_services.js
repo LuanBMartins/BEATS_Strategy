@@ -23,10 +23,11 @@ module.exports = class request_services{
     static async insertAddRequestForm(n_protocol, proposed_strategy){
         try{
             const data = JSON.stringify(proposed_strategy);
+            await fs.mkdir(process.env.PATH_REQUEST + `${n_protocol}`, { recursive: true });
             await fs.writeFile(process.env.PATH_REQUEST + `${n_protocol}/form.json`, data);
         }   
         catch(err){
-            console.log(err);
+            console.log("🚀 ~ file: request_services.js:29 ~ request_services ~ insertAddRequestForm ~ err", err)   
         }
     }
 
