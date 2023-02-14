@@ -73,7 +73,7 @@ module.exports = class request_services{
 
     static async getRequestsByUser(username){
         try{
-            const text = "SELECT nro_protocolo AS protocol_number, tipo_solicitacao AS type, estado AS state,\
+            const text = "SELECT nro_protocolo AS protocol_number, data_solicitacao as date_required, tipo_solicitacao AS type, estado AS state,\
             texto_rejeicao AS rejection_text, estrategia_referente AS relating_strategy, nro_recorrencia AS recurrence_number,\
             nro_aceitar AS accept_count, nro_aceitar_com_sugestoes AS accept_with_suggestions_count, nro_rejeitar AS reject_count\
             FROM solicitacao LEFT JOIN votacao_conselho ON nro_protocolo = nro_protocolo_solicitacao\
