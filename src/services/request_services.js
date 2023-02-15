@@ -1,3 +1,5 @@
+const repository = require('../infra/repositories/requests-repository');
+
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
 
@@ -86,6 +88,18 @@ module.exports = class request_services{
         }
         catch(err){
             console.log(err);
+        }
+    }
+
+    static async deleteRequest(protocol){
+        const { validate: validateUuid } = require('uuid')
+        if(!validateUuid(protocol)){
+            return false
+        }
+        
+        const deleteResult = await repository.deleteRequest(protocol)
+        return {
+            delete: !!deleteResult
         }
     }
 }

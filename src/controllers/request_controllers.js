@@ -66,4 +66,38 @@ module.exports = class request_controllers{
 
         res.status(200).send({requests});
     }
+
+
+    static async deleteRequest(req, res){
+        const { protocol } = req.params
+        try {
+            if(!protocol){
+                return res.status(500).send({
+                    success: false,
+                    message: 'Server Error'
+                });
+                
+            }
+    
+            const request = await request_services.deleteRequest(protocol)
+            if(!request.delete){
+                console.log("🚀 ~ file: request_controllers.js:84 ~ request_controllers ~ deleteRequest ~ request.delete", request.delete)
+                return res.status(404).send({
+                    success: false,
+                    message: 'Request not found!'
+                });
+            }
+
+            return res.status(200).send({
+                success: true,
+                message: 'request has been removed!'
+            });
+        } catch (error) {
+            console.log("🚀 ~ file: request_controllers.js:91 ~ request_controllers ~ deleteRequest ~ error", error)
+            return res.status(500).send({
+                success: true,
+                message: 'Server Error!'
+            });
+        }
+    }
 }

@@ -42,4 +42,6 @@ router.post('/requests/addition', middlewares.authorizeUser([0, 1]),
             middlewares.preprocessAddRequestForm, 
             request_controller.postAddRequestSaveJSON);
 
+router.delete('/requests/delete/:protocol', middlewares.authorizeUser([0, 1]), request_controller.deleteRequest)
+
 module.exports = router;
