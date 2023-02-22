@@ -67,6 +67,13 @@ module.exports = class request_controllers{
         res.status(200).send({requests});
     }
 
+    static async followRequestsWaitingApproval(req, res, next){
+        const username = req.user_info.username;
+        let requests = await request_services.getRequetsWaitingStatus(username);
+
+        res.status(200).send({requests});
+    }
+
 
     static async deleteRequest(req, res){
         const { protocol } = req.params

@@ -91,6 +91,11 @@ module.exports = class request_services{
         }
     }
 
+    static async getRequetsWaitingStatus(){
+        const requests = await repository.getRequetsWaitingStatus()
+        return requests
+    }
+
     static async deleteRequest(protocol){
         const { validate: validateUuid } = require('uuid')
         if(!validateUuid(protocol)){

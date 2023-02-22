@@ -1,6 +1,11 @@
 const db = require('../database/models')
 
-exports.getRequets = (protocol) => {
+exports.getRequetsWaitingStatus = () => {
+    return db.solicitacao.findAll({
+        where: {
+            estado: 0
+        }
+    })
 }
 
 exports.deleteRequest = (protocol) => {
