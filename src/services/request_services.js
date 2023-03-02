@@ -21,6 +21,9 @@ module.exports = class request_services{
     }
 
 
+    static async getRequestsById(id){
+        return repository.getById(id)
+    }
 
     static async insertAddRequestForm(n_protocol, proposed_strategy){
         try{

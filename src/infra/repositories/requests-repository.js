@@ -28,3 +28,11 @@ exports.deleteRequest = (protocol) => {
         }
     })
 }
+
+exports.getById = (id) => {
+    return db.solicitacao.findOne({
+        where: {
+            nro_protocolo: id
+        }
+    })
+}

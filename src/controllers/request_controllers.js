@@ -74,6 +74,14 @@ module.exports = class request_controllers{
         res.status(200).send({requests});
     }
 
+    static async readRequestById(req, res){
+        const { id } = req.params
+        const request = await request_services.getRequestsById(id)
+        if(!request){
+            res.status(200).send({success: false, message: 'Request not found!'});    
+        }
+        res.status(200).send({request});
+    }
 
     static async deleteRequest(req, res){
         const { protocol } = req.params
