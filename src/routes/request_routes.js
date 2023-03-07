@@ -35,7 +35,7 @@ const multi_upload = multer({storage}).array('images', 10);
 
 router.get('/requests/', middlewares.authorizeUser([0, 1]), request_controller.followRequestsStatus);
 
-router.get('/requests/:id', middlewares.authorizeUser([0, 1]), request_controller.readRequestById);
+router.get('/requests/:id', middlewares.authorizeUser([2]), request_controller.readRequestById);
 
 router.get('/requests/waiting/approval', middlewares.authorizeUser([2]), request_controller.followRequestsWaitingApproval);
 
