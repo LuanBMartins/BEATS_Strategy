@@ -40,7 +40,6 @@ router.get('/requests/:id', middlewares.authorizeUser([2]), request_controller.r
 router.get('/requests/waiting/approval', middlewares.authorizeUser([2]), request_controller.followRequestsWaitingApproval);
 
 router.post('/requests/addition', middlewares.authorizeUser([0, 1]),
-            request_controller.postAddRequestInsertDB,
             multi_upload,
             middlewares.assertBodyFields(['name', 'type', 'aliases', 'c', 'i', 'a', 'authn', 'authz', 'acc', 'nr']),
             middlewares.preprocessAddRequestForm, 

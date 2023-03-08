@@ -1,5 +1,11 @@
 const db = require('../database/models')
 
+
+exports.create = (request) => {
+    return db.solicitacao.create(request)
+}
+
+
 exports.getRequetsWaitingStatus = () => {
     return db.solicitacao.findAll({
         attributes: [

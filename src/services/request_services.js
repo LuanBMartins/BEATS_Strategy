@@ -1,4 +1,5 @@
-const repository = require('../infra/repositories/requests-repository');
+const requestRepository = require('../infra/repositories/requests-repository');
+const strategyRepository = require('../infra/repositories/architecture-strategy-repository')
 
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
@@ -20,9 +21,34 @@ module.exports = class request_services{
         }
     }
 
+    static async createStrategyRequest(strategy, auth){
+        try {
+
+            const { images } = strategy
+            delete strategy.images
+            strategy.type = strategy.type == 'tactic' ? 1 : 0
+            const strategyCreate = await strategyRepository.create({...strategy, username_creator: auth.username})
+            if(!strategyCreate){
+                return false
+            }
+            const requestCreate = await requestRepository.create({
+                username: auth.username,
+                tipo_solicitacao: 1,
+                estado: 0
+            })
+            if(!requestCreate){
+                return false
+            }
+
+            return true
+        } catch (error) {
+            console.log("🚀 ~ file: request_services.js:27 ~ request_services ~ createStrategyRequest ~ error:", error)
+            return false
+        }
+    }
 
     static async getRequestsById(id){
-        return repository.getById(id)
+        return requestRepository.getById(id)
     }
 
     static async insertAddRequestForm(n_protocol, proposed_strategy){
@@ -95,7 +121,7 @@ module.exports = class request_services{
     }
 
     static async getRequetsWaitingStatus(){
-        const requests = await repository.getRequetsWaitingStatus()
+        const requests = await requestRepository.getRequetsWaitingStatus()
         return requests
     }
 
@@ -105,7 +131,7 @@ module.exports = class request_services{
             return false
         }
         
-        const deleteResult = await repository.deleteRequest(protocol)
+        const deleteResult = await requestRepository.deleteRequest(protocol)
         return {
             delete: !!deleteResult
         }
