@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function assertBodyFields(body_fields){
-    return function(req, res, next){
+    return function(req, res, next){        
         const fields_undefined = [];
         
         body_fields.forEach(field => {

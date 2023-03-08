@@ -42,7 +42,6 @@ router.get('/requests/waiting/approval', middlewares.authorizeUser([2]), request
 router.post('/requests/addition', middlewares.authorizeUser([0, 1]),
             multi_upload,
             middlewares.assertBodyFields(['name', 'type', 'aliases', 'c', 'i', 'a', 'authn', 'authz', 'acc', 'nr']),
-            middlewares.preprocessAddRequestForm, 
             request_controller.postAddRequestSaveJSON);
 
 router.delete('/requests/delete/:protocol', middlewares.authorizeUser([0, 1]), request_controller.deleteRequest)

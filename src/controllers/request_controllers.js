@@ -33,18 +33,18 @@ module.exports = class request_controllers {
         try {
             const createStrategyRequest = await request_services.createStrategyRequest(body, user_info)
             if (!createStrategyRequest) {
-                res.status(500).send({
+                return res.status(500).send({
                     success: false,
                     message: "Erro ao criar a solicitação!"
                 })
             }
 
-            res.status(201).send({
+            return res.status(201).send({
                 success: true,
                 message: "success: strategy add request done"
             })
         } catch (error) {
-            res.status(500).send({
+            return res.status(500).send({
                 success: true,
                 message: "Server Error!"
             })
