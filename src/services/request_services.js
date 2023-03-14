@@ -1,3 +1,4 @@
+/* eslint-disable */
 const requestRepository = require('../infra/repositories/requests-repository');
 const strategyRepository = require('../infra/repositories/architecture-strategy-repository')
 
@@ -112,6 +113,7 @@ module.exports = class request_services{
             const values = [username];
 
             const db_requests = await db_client.query(text, values);
+            console.log("🚀 ~ file: request_services.js:115 ~ request_services ~ getRequestsByUser ~ db_requests:", db_requests)
 
             return db_requests.rows;
         }

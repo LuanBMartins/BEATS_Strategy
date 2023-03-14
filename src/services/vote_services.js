@@ -1,3 +1,4 @@
+/* eslint-disable */
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const db_client = require('../dbconfig').db_client;
 
 module.exports = class comment_services{
