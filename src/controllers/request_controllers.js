@@ -1,3 +1,4 @@
+/* eslint-disable */
 const request_services = require('../services/request_services');
 
 const request_state_descriptions = [

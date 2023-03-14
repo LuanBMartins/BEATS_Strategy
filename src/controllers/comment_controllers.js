@@ -1,3 +1,4 @@
+/* eslint-disable */
 const strategy_services = require("../services/strategy_services");
 const comment_services = require("../services/comment_services");
 

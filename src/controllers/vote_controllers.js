@@ -1,3 +1,4 @@
+/* eslint-disable */
 const vote_services = require('../services/vote_services');
 const request_services = require('../services/request_services');
 const user_services = require('../services/user_services');

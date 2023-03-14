@@ -28,14 +28,16 @@ module.exports = class request_services{
             const { images } = strategy
             delete strategy.images
             strategy.type = strategy.type == 'tactic' ? 1 : 0
-            const strategyCreate = await strategyRepository.create({...strategy, username_creator: auth.username})
+            const {dataValues: strategyCreate} = await strategyRepository.create({...strategy, username_creator: auth.username})
+            console.log("🚀 ~ file: request_services.js:32 ~ request_services ~ createStrategyRequest ~ strategyCreate:", strategyCreate)
             if(!strategyCreate){
                 return false
             }
             const requestCreate = await requestRepository.create({
                 username: auth.username,
                 tipo_solicitacao: 1,
-                estado: 0
+                estado: 0,
+                strategy_id: strategyCreate.id
             })
             if(!requestCreate){
                 return false

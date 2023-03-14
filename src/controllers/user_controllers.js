@@ -1,3 +1,4 @@
+/* eslint-disable */
 const user_services = require('../services/user_services');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');

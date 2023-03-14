@@ -46,13 +46,13 @@ module.exports = (sequelize, DataTypes) => {
     texto_edicao: {
       type: DataTypes.STRING(500)
     },
-    estrategia_referente: {
-      type: DataTypes.STRING(100),
+    strategy_id: {
+      type: DataTypes.INTEGER,
       references: {
-        model: 'estrategia_arquitetural',
-        key: 'nome',
-        onDelete: 'CASCADE'
-      }
+        model: 'architecture_strategy',
+        key: 'id'
+      },
+      allowNull: false
     }
   }, {
     tableName: 'solicitacao',

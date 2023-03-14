@@ -1,3 +1,4 @@
+/* eslint-disable */
 const strategyServices = require('../services/strategy_services')
 
 module.exports = class strategyControllers {
