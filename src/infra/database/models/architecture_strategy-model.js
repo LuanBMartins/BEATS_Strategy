@@ -98,5 +98,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   })
 
+  architectureStrategy.associate = (models) => {
+    architectureStrategy.hasOne(models.solicitacao, {
+      foreignKey: {
+        fieldName: 'strategy_id'
+      }
+    })
+  }
+
   return architectureStrategy
 }

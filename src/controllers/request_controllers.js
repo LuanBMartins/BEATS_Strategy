@@ -69,12 +69,21 @@ module.exports = class request_controllers {
     }
 
     static async readRequestById(req, res) {
-        const { id } = req.params
-        const request = await request_services.getRequestsById(id)
-        if (!request) {
-            res.status(200).send({ success: false, message: 'Request not found!' });
+        try {
+            const { id } = req.params
+            
+            if (!id || !parseInt(id)) {
+                return res.status(400).send('Paranetro inválido!');
+            }
+            const request = await request_services.getRequestsById(id)
+            if (!request) {
+                return res.status(200).send({ success: false, message: 'Request not found!' });
+            }
+            return res.status(200).send({ request });
+        } catch (error) {
+            return res.status(400).send('Paranetro inválido!');
         }
-        res.status(200).send({ request });
+
     }
 
     static async deleteRequest(req, res) {

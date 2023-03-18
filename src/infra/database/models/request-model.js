@@ -65,5 +65,13 @@ module.exports = (sequelize, DataTypes) => {
     ]
   })
 
+  solicitacao.associate = (model) => {
+    solicitacao.belongsTo(model.architecture_strategy, {
+      foreignKey: {
+        fieldName: 'strategy_id'
+      }
+    })
+  }
+
   return solicitacao
 }
