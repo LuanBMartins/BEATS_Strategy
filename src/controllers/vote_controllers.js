@@ -24,77 +24,76 @@ const request_state_descriptions = [
 
 module.exports = class vote_controllers{
     static async voteAssert(req, res, next){
-        const n_protocol = req.params.protocol;
-
-        const regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
-        if(!regex.test(n_protocol)){
-            return res.status(400).send({error_message: 'protocol number is not in UUID format'});
-        }
+        const protocolNumber = req.params.protocol;
+        const strategyRequest = await request_services.getRequestByProtocolNumber(protocolNumber);
         
-        req.request = await request_services.getRequestByProtocolNumber(n_protocol);
-        if(!req.request){
-            return res.status(404).send({error_message: `request (protocol number '${n_protocol}') does not exist`});
+        if(!strategyRequest){
+            return res.status(400).send({
+                success: false,
+                message: `request (protocol number '${protocolNumber}') does not exist`
+            })
         }
 
+        req.request = strategyRequest
         next();
     }
 
 
 
     static async adminVote(req, res, next){
+        if(!req.params.protocol){ 
+            return res.status(500)
+        }
+        
         const user = req.user_info;
-        const n_protocol = req.params.protocol;
+        const protocolNumber = req.params.protocol;
         const request = req.request;
-
-        //User voting is not an administrator
+   
         if(user.user_type != 2){
-            return next();
+            return res.status(401)
         }
         
         if(request.state != 0){
             return res.status(400).send({
-                error_message: 'request is no longer in administration vote state',
-                protocol_number: n_protocol,
+                essage: 'request is no longer in administration vote state',
+                protocol_number: protocolNumber,
                 type: ['Edition', 'Addition'][request.type],
                 state: request.state,
                 state_description: request_state_descriptions[request.type][request.state]
             });
         }
         
-        let admin_vote = null;
         switch(String(req.body.vote).toUpperCase()){
             case "ACCEPT":
-                admin_vote = true;
+                request.state = 4
                 break;
             
             case "REJECT":
-                admin_vote = false;
+                request.state = 1
+                request.reject_text = req.body.reject_text || null
                 break;
 
             default:
                 return res.status(400).send({error_message: 'wrong vote option. Vote options: (Accept, Reject)'})
         }
 
-        const rejection_text = req.body.rejection_text;
-
-        
-        const request_voted = await vote_services.insertAdminVoteOnRequest(n_protocol, user.username,
-            admin_vote, admin_vote? "" : rejection_text);
-
-        request_voted.state_description = request_state_descriptions[1][request_voted.state];
-        
-        
-        let vote_response = {request_voted};
-        
-        //admin accepted, opening council voting
-        if(admin_vote && request_voted.type === 1){ 
-            const council_voting = await vote_services.createCouncilVoting(n_protocol, 1, 
-                process.env.PATH_RECORD + `/${request_voted.protocol_number}/`);
-            
-            vote_response = {...vote_response, council_voting};
+        const requestVote = await vote_services.insertAdminVoteOnRequest(protocolNumber, {
+            estado: request.state,
+            administrador: user.username,
+            voto_admin: true,
+            texto_rejeicao: request.reject_text || null
+        })
+    
+        if(requestVote && request.state === 4){
+            await request_services.updateRequestState(request.architecture_strategy.id, {
+                accepted: 1
+            })
         }
 
-        return res.status(202).send(vote_response);
+        return res.status(202).send({
+            success: true,
+            message: "Request update!"
+        });
     }
 
 

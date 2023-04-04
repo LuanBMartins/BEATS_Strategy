@@ -62,10 +62,14 @@ module.exports = class request_controllers {
     }
 
     static async followRequestsWaitingApproval(req, res, next) {
-        const username = req.user_info.username;
-        let requests = await request_services.getRequetsWaitingStatus(username);
-
-        res.status(200).send({ requests });
+        try {
+            const username = req.user_info.username;
+            let requests = await request_services.getRequetsWaitingStatus(username);
+    
+            res.status(200).send({ requests });
+        } catch (error) {
+            return res.status(500).send('Server Error!');
+        }
     }
 
     static async readRequestById(req, res) {

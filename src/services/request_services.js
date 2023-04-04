@@ -69,20 +69,8 @@ module.exports = class request_services{
 
     static async getRequestByProtocolNumber(request_protocol_number){
         try{
-            const text = "SELECT tipo_solicitacao AS type, estado AS state,\
-            data_solicitacao AS application_date, username AS author,\
-            administrador AS administrator, voto_admin AS admin_vote,\
-            texto_rejeicao AS rejection_text\
-            FROM solicitacao WHERE nro_protocolo = $1";
-            const values = [request_protocol_number];
-
-            const db_request = await db_client.query(text, values);
-
-            if(db_request.rowCount === 0){
-                return null;
-            }
-
-            return db_request.rows[0];
+            const requestStragey = await requestRepository.getRequestsByProtocol(request_protocol_number)
+            return requestStragey.get({plain: true})
         }
         catch(err){
             console.log(err);
@@ -91,23 +79,18 @@ module.exports = class request_services{
 
 
 
-    static async updateRequestState(request_protocol_number){
-        try{
-            const text = "UPDATE solicitacao SET estado = 3 WHERE nro_protocolo = $1";
-            const values = [request_protocol_number];
-
-            const db_request = await db_client.query(text, values);
-        }
-        catch(err){
-            console.log(err);
-        }
+    static async updateRequestState(id, strategy){
+        const requestUpdate = await strategyRepository.update(id, strategy)
+        return !!requestUpdate[0]
     }
 
-
+    static async getRequestByProtocol(protocol){
+        const requests = await requestRepository.getRequestsByProtocol(protocol)
+        return requests;
+    }
 
     static async getRequestsByUser(username){
         const requests = await requestRepository.getRequestsByUsername(username)
-        console.log("🚀 ~ file: request_services.js:110 ~ request_services ~ getRequestsByUser ~ requests:", requests)
         return requests;
     }
 

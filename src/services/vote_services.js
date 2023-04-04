@@ -1,20 +1,13 @@
 /* eslint-disable */
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
+const requestRepository = require('../infra/repositories/requests-repository')
 
 module.exports = class vote_services{
-    static async insertAdminVoteOnRequest(n_protocol, admin, admin_vote, rejection_text){
+    static async insertAdminVoteOnRequest(n_protocol, vote){
         try{
-            const text = "UPDATE solicitacao SET administrador = $1, voto_admin = $2,\
-            texto_rejeicao = $3, estado = $4\
-            WHERE nro_protocolo = $5\
-            RETURNING nro_protocolo AS protocol_number, tipo_solicitacao AS type, estado AS state,\
-            data_solicitacao AS application_date, username AS author";
-            const values = [admin, admin_vote, rejection_text, admin_vote + 1, n_protocol];
-
-            const request_voted = await db_client.query(text, values);
-
-            return request_voted.rows[0];
+            const update = await requestRepository.update(n_protocol, vote)
+            return !!update[0]
         }
         catch(err){
             console.log(err);
