@@ -1,6 +1,8 @@
+/* eslint-disable */
 const db_client = require('../dbconfig').db_client;
 const FuzzySearch = require('fuzzy-search');
 const fs = require('fs').promises;
+const strategiesRepository = require('../infra/repositories/architecture-strategy-repository')
 
 function fuzzySearchStrategiesName(strategies, name){
     let strategies_names = [];
@@ -10,7 +12,7 @@ function fuzzySearchStrategiesName(strategies, name){
         arr.push({name: strategy.name, index});
         return arr;
     });
-
+b
     const searcher = new FuzzySearch(strategies_names, ['name'], {
         sort: true
     });
@@ -60,24 +62,8 @@ module.exports = class strategy_services{
 
 
     static async getStrategiesFiltered(name, type, attributes){
-        let strategies = await this.getAllStrategies();
-        
-        strategies = strategies.filter(strategy => {
-            return (strategy.c || !attributes.c) &&
-                   (strategy.i || !attributes.i) &&
-                   (strategy.a || !attributes.a) &&
-                   (strategy.authn || !attributes.authn) &&
-                   (strategy.authz || !attributes.authz) &&
-                   (strategy.acc || !attributes.acc) &&
-                   (strategy.nr || !attributes.nr) &&
-                   (!type || type == strategy.type);
-        });
-
-        if(name && strategies.length > 0){
-            strategies = fuzzySearchStrategiesName(strategies, name);
-        }
-        
-        return strategies;
+        const strategies = await strategiesRepository.pagination(name, type, attributes)
+        return strategies
     }
 
 

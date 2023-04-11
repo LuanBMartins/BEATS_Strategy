@@ -2,7 +2,7 @@
 const strategyServices = require('../services/strategy_services')
 
 module.exports = class strategyControllers {
-  static async searchStrategies (req, res, next) {
+  static async searchStrategies(req, res, next) {
     const attributes = {
       c: false,
       i: false,
@@ -12,63 +12,46 @@ module.exports = class strategyControllers {
       acc: false,
       nr: false
     }
+    
 
     if (req.query.attr) {
-      let attributesArray = []
-      if (!Array.isArray(req.query.attr)) {
-        attributesArray.push(req.query.attr)
-      } else {
-        attributesArray = req.query.attr
+      const attributesArray = Array.isArray(req.query.attr) ? req.query.attr : [req.query.attr]
+      const invalidAttributes = attributesArray.filter(attr =>  !(attr in attributes))
+
+      if (invalidAttributes.length > 0) {
+        return res.status(400).send({ 
+          success: false,
+          message: `infosec attribute '${invalidAttributes[0]}' does not exist` 
+        })
       }
 
-      for (const attr of attributesArray) {
-        const attrLc = attr.toLowerCase()
-        if (attributes[attrLc] === undefined) {
-          return res.status(400).send({ error_message: `infosec attribute '${attr}' does not exist` })
-        } else {
-          attributes[attrLc] = true
+      attributesArray.forEach(attr => {
+        attributes[attr.toLowerCase()] = true
+      })
+    }
+
+    const name = req.query.name ? req.query.name : ''
+    let strategyType = req.query.type ? req.query.type.toUpperCase() : ''
+
+    let type = -1
+    switch (strategyType) {
+      case 'PATTERN':
+        type = 0
+        break
+      case 'TACTIC':
+        type = 1
+        break
+      default:
+        if (strategyType) {
+          return res.status(400).send({ error_message: `strategy type '${strategyType}' does not exist` })
         }
-      }
-    }
-
-    let name = null
-    if (req.query.name) {
-      if (Array.isArray(req.query.name)) {
-        name = req.query.name[0]
-      } else {
-        name = req.query.name
-      }
-    }
-
-    let type = null
-    if (req.query.type) {
-      if (Array.isArray(req.query.type)) {
-        type = req.query.type[0]
-      } else {
-        type = req.query.type
-      }
-
-      switch (type.toUpperCase()) {
-        case 'PATTERN':
-          type = 0
-          break
-        case 'TACTIC':
-          type = 1
-          break
-        default:
-          return res.status(400).send({ error_message: `strategy type '${type}' does not exist` })
-      }
     }
 
     const strategies = await strategyServices.getStrategiesFiltered(name, type, attributes)
-    strategies.forEach((strategy) => {
-      strategy.type = ['Pattern', 'Tactic'][strategy.type]
-    })
-
     return res.status(200).send({ strategies })
   }
 
-  static async getStrategy (req, res, next) {
+  static async getStrategy(req, res, next) {
     const name = req.params.name
     let strategy = await strategyServices.getStrategyByName(name)
 
@@ -89,7 +72,7 @@ module.exports = class strategyControllers {
     return res.status(200).send(strategy)
   }
 
-  static async listStrategyImagesName (req, res, next) {
+  static async listStrategyImagesName(req, res, next) {
     const name = req.params.name
 
     const strategy = await strategyServices.getStrategyByName(name)
@@ -102,7 +85,7 @@ module.exports = class strategyControllers {
     return res.status(200).send({ images_name: imgs })
   }
 
-  static async getStrategyImageByName (req, res, next) {
+  static async getStrategyImageByName(req, res, next) {
     const name = req.params.name
     const imageName = req.params.imagename
 
