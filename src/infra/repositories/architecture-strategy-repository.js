@@ -2,6 +2,14 @@ const db = require('../database/models')
 const { Sequelize } = require('../database/models')
 const { Op } = require('sequelize')
 
+exports.findById = (id) => {
+  return db.architecture_strategy.findOne({
+    where: {
+      id
+    }
+  })
+}
+
 exports.create = async (strategy) => {
   return db.architecture_strategy.create(strategy)
 }

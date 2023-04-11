@@ -52,24 +52,19 @@ module.exports = class strategyControllers {
   }
 
   static async getStrategy(req, res, next) {
-    const name = req.params.name
-    let strategy = await strategyServices.getStrategyByName(name)
-
-    if (!strategy) {
-      return res.status(404).send({ error_message: `strategy '${name}' does not exist` })
+    try {
+      const id = req.params.id
+      let strategy = await strategyServices.getStrategiesById(id)
+      if (!strategy) {
+        return res.status(404).send({ 
+          success: false,
+          error_message: `strategy does not exist!` 
+        })
+      }
+      return res.status(200).send(strategy)
+    } catch (error) {
+      return res.status(500).send('Server Error!')
     }
-
-    const aliases = await strategyServices.getStrategyAliases(name)
-    strategy.aliases = aliases
-
-    const documentation = await strategyServices.getStrategyDocumentation(strategy.documentation_path)
-
-    strategy = { ...strategy, ...documentation }
-    delete strategy.documentation_path
-    delete strategy.images_path
-    strategy.type = ['Pattern', 'Tactic'][strategy.type]
-
-    return res.status(200).send(strategy)
   }
 
   static async listStrategyImagesName(req, res, next) {

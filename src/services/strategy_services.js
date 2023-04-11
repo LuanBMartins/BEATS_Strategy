@@ -85,6 +85,10 @@ module.exports = class strategy_services{
         }
     }
 
+    static async getStrategiesById(id){
+        const strategie = await strategiesRepository.findById(id)
+        return strategie
+    }
 
 
     static async getStrategyByName(name){
