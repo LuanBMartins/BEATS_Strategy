@@ -1,3 +1,4 @@
+/* eslint-disable */
 const jwt = require('jsonwebtoken');
 
 function assertBodyFields(body_fields){
@@ -18,6 +19,43 @@ function assertBodyFields(body_fields){
         }
         
         next();
+    }
+}
+
+function strategyBodyValidate(){
+    return function(req, res, next){        
+        const bodyPayloadValid = ['name', 'type', 'aliases']
+        const bodyAttributesValid = ['c', 'i', 'a', 'authn', 'authz', 'acc', 'nr']
+        
+        const payloadIsValid = bodyPayloadValid.filter(value => {
+            if(!req.body[value]){
+                return value
+            }else
+                return false
+        })
+        
+        const payloadAttributesIsValid = bodyAttributesValid.filter(value => {
+            if(!req.body[value]){
+                return value
+            }else
+                return false
+        })
+        
+        if(payloadIsValid.length >= 3){
+            return res.status(400).send({
+                error_message: "request should contain the following body fields",
+                fields: payloadIsValid
+            });
+        }
+        
+        if(payloadAttributesIsValid.length >= 7){
+            return res.status(400).send({
+                error_message: "request should contain the following body fields",
+                fields: payloadAttributesIsValid
+            });
+        }
+
+        next()
     }
 }
 
@@ -69,4 +107,5 @@ module.exports = {
     assertBodyFields,
     authorizeUser,
     preprocessAddRequestForm,
+    strategyBodyValidate
 };
