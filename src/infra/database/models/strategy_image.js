@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     origin: {
-      type: DataTypes.CHAR(),
+      type: DataTypes.STRING,
       allowNull: false
     }
   }, {
@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     strategyImage.belongsTo(model.architecture_strategy, {
       foreignKey: {
         fieldName: 'strategy_id'
-      }
+      },
+      as: 'images'
     })
   }
 

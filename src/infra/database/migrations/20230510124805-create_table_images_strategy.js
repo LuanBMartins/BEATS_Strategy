@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       origin: {
-        type: Sequelize.CHAR(),
+        type: Sequelize.STRING,
         allowNull: false
       }
     })

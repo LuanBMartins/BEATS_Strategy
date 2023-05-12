@@ -22,12 +22,16 @@ module.exports = class request_services{
         }
     }
 
-    static async createStrategyRequest(strategy, auth){
+    static async createStrategyRequest(strategy, files, auth){
         try {
 
-            const { images } = strategy
             delete strategy.images
             strategy.type = strategy.type == 'tactic' ? 1 : 0
+            strategy.images = files.map(file => {
+                return {
+                    origin: file.filename
+                }
+            })
             const {dataValues: strategyCreate} = await strategyRepository.create({...strategy, username_creator: auth.username})
             if(!strategyCreate){
                 return false

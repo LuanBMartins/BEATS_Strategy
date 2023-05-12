@@ -61,6 +61,7 @@ module.exports = class strategyControllers {
           error_message: `strategy does not exist!` 
         })
       }
+      
       return res.status(200).send(strategy)
     } catch (error) {
       return res.status(500).send('Server Error!')

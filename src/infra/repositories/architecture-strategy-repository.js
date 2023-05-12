@@ -6,12 +6,18 @@ exports.findById = (id) => {
   return db.architecture_strategy.findOne({
     where: {
       id
-    }
+    },
+    raw: true
   })
 }
 
 exports.create = async (strategy) => {
-  return db.architecture_strategy.create(strategy)
+  return db.architecture_strategy.create(strategy, {
+    include: [{
+      model: db.strategy_image,
+      as: 'images'
+    }]
+  })
 }
 
 exports.update = async (id, strategy) => {

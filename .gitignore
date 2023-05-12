@@ -6,3 +6,4 @@ src/node_modules
 .env
 node_modules/
 
+src/local_storage

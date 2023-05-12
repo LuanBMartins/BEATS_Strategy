@@ -3,6 +3,8 @@ const db_client = require('../dbconfig').db_client;
 const FuzzySearch = require('fuzzy-search');
 const fs = require('fs').promises;
 const strategiesRepository = require('../infra/repositories/architecture-strategy-repository')
+const imagesRepository = require('../infra/repositories/strategy-images-repository');
+const { getImageFile } = require('./utils/getFile');
 
 function fuzzySearchStrategiesName(strategies, name){
     let strategies_names = [];
@@ -86,10 +88,16 @@ module.exports = class strategy_services{
     }
 
     static async getStrategiesById(id){
-        const strategie = await strategiesRepository.findById(id)
-        return strategie
+        const strategy = await strategiesRepository.findById(id)
+        const imagesByStrategy = await imagesRepository.findById(strategy.id)
+        const images = await Promise.all(imagesByStrategy.map(async (value) => {
+            return {
+                file: await getImageFile(value.origin)
+            }
+        }))
+        
+        return { ...strategy, images }
     }
-
 
     static async getStrategyByName(name){
         try{

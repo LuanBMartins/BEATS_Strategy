@@ -108,7 +108,8 @@ module.exports = (sequelize, DataTypes) => {
     architectureStrategy.hasMany(models.strategy_image, {
       foreignKey: {
         fieldName: 'strategy_id'
-      }
+      },
+      as: 'images'
     })
   }
 

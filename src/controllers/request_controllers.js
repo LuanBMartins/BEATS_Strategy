@@ -31,8 +31,9 @@ module.exports = class request_controllers {
 
     static async postAddRequestSaveJSON(req, res, next) {
         const { body, user_info } = req
+        const { files } = req
         try {
-            const createStrategyRequest = await request_services.createStrategyRequest(body, user_info)
+            const createStrategyRequest = await request_services.createStrategyRequest(body, files, user_info)
             if (!createStrategyRequest) {
                 return res.status(500).send({
                     success: false,
