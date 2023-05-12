@@ -16,6 +16,9 @@ exports.create = async (strategy) => {
     include: [{
       model: db.strategy_image,
       as: 'images'
+    }, {
+      model: db.aliases,
+      as: 'aliases'
     }]
   })
 }

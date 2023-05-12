@@ -111,6 +111,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: 'images'
     })
+
+    architectureStrategy.hasMany(models.aliases, {
+      foreignKey: {
+        fieldName: 'strategy_id'
+      },
+      as: 'aliases'
+    })
   }
 
   return architectureStrategy

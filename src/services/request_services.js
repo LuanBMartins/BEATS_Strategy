@@ -32,6 +32,11 @@ module.exports = class request_services{
                     origin: file.filename
                 }
             })
+
+            if(strategy.aliases){
+                strategy.aliases = JSON.parse(strategy.aliases).map(name => ({ name }))
+            }
+        
             const {dataValues: strategyCreate} = await strategyRepository.create({...strategy, username_creator: auth.username})
             if(!strategyCreate){
                 return false
