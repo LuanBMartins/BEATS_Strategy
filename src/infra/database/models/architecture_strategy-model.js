@@ -118,6 +118,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       as: 'aliases'
     })
+
+    architectureStrategy.hasMany(models.comment, {
+      foreignKey: {
+        fieldName: 'strategy_id'
+      }
+    })
   }
 
   return architectureStrategy

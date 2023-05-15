@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const usuario = sequelize.define('usuario', {
+  const user = sequelize.define('usuario', {
     username: {
       type: DataTypes.STRING(50),
       primaryKey: true
@@ -38,5 +38,13 @@ module.exports = (sequelize, DataTypes) => {
     underscored: true
   })
 
-  return usuario
+  user.associate = (models) => {
+    user.hasMany(models.comment, {
+      foreignKey: {
+        fieldName: 'username'
+      }
+    })
+  }
+
+  return user
 }

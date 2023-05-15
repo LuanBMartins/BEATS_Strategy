@@ -8,11 +8,12 @@ const sequelize = new Sequelize(
   {
     host: process.env.PGHOST,
     port: parseFloat(process.env.PGPORT),
-    dialect: 'postgres'
+    dialect: 'postgres',
+    logging: false
   })
 
 sequelize.authenticate()
   .then(() => console.log('Connection has been established successfully.'))
-  .catch(error => { console.log("🚀 ~ file: database.js:17 ~ error", error) })
+  .catch(error => { console.log('🚀 ~ file: database.js:17 ~ error', error) })
 
 module.exports = sequelize

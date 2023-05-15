@@ -1,55 +1,70 @@
 module.exports = (sequelize, DataTypes) => {
-  const comentario = sequelize.define('comentario', {
+  const comment = sequelize.define('comment', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    strategy_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'architecture_strategy',
+        key: 'id'
+      },
+      allowNull: false
+    },
     username: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
+      type: DataTypes.STRING,
       references: {
         model: 'usuario',
         key: 'username'
       },
-      onDelete: 'CASCADE'
+      allowNull: false
     },
-    estrategia: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      references: {
-        model: 'estrategia_arquitetural',
-        key: 'nome'
-      },
-      onDelete: 'CASCADE'
-    },
-    data_comentario: {
+    date: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+    text: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
-    texto: {
-      type: DataTypes.STRING(280),
-      allowNull: true
-    },
-    comentario_base: {
-      type: DataTypes.UUID,
-      allowNull: true,
+    base_comment: {
+      type: DataTypes.INTEGER,
       references: {
-        model: 'comentario',
+        model: 'comment',
         key: 'id'
       },
-      onDelete: 'CASCADE'
+      allowNull: true
     }
   }, {
-    timestamps: false,
-    underscored: true,
-    uniqueKeys: {
-      unique_comentario: {
-        fields: ['username', 'estrategia', 'data_comentario']
-      }
-    }
+    tableName: 'comment',
+    timestamps: false
   })
 
-  return comentario
+  comment.associate = (models) => {
+    comment.belongsTo(models.architecture_strategy, {
+      foreignKey: {
+        fieldName: 'strategy_id'
+      }
+    })
+    comment.belongsTo(models.usuario, {
+      foreignKey: {
+        fieldName: 'username'
+      }
+    })
+    comment.hasMany(models.comment, {
+      foreignKey: {
+        fieldName: 'base_comment'
+      },
+      as: 'replies'
+    })
+    comment.belongsTo(models.comment, {
+      foreignKey: {
+        fieldName: 'base_comment'
+      }
+    })
+  }
+
+  return comment
 }

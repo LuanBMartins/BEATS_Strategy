@@ -1,7 +1,26 @@
 /* eslint-disable */
 const db_client = require('../dbconfig').db_client;
+const commentRepository = require('../infra/repositories/comment-repository')
 
 module.exports = class comment_services{
+    static async readComments(strategyId){
+        if(!strategyId){
+            return []
+        }
+
+        const comments = await commentRepository.findByStrategy(strategyId)
+        return comments
+    }
+
+    static async readComment(commentId){
+        if(!commentId){
+            return []
+        }
+
+        const comments = await commentRepository.findByComment(commentId)
+        return comments
+    }
+
     static async getAllStrategyComments(strategy_name){
         try{
             const text = "SELECT b.id AS base_id, b.username AS base_user,\
@@ -101,16 +120,15 @@ module.exports = class comment_services{
 
 
 
-    static async commentStrategy(strategy_name, author, comment_text){
+    static async commentStrategy(strategyId, author, commentText){
         try{
-            const text = "INSERT INTO comentario (username, estrategia, texto)\
-            VALUES ($1, $2, $3)\
-            RETURNING id, estrategia AS strategy, username AS author, data_comentario AS date, texto AS text";
-            const values = [author, strategy_name, comment_text];
-            
-            const rowInserted = await db_client.query(text, values);
+            const comment = await commentRepository.insert({
+                strategy_id: strategyId,
+                username: author,
+                text: commentText
+            })
 
-            return rowInserted.rows[0];
+            return comment
         }
         catch(err){
             console.log(err);
