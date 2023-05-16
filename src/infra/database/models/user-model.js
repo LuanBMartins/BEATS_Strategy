@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true
     }
   }, {
+    tableName: 'usuario',
     timestamps: false,
     underscored: true
   })

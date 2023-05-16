@@ -21,6 +21,23 @@ module.exports = class comment_services{
         return comments
     }
 
+    static async getCommentById(commentId){
+        if(!commentId){
+            return false
+        }
+
+        const comments = await commentRepository.getComment(commentId)
+        return comments
+    }
+
+    static async removeComment(commentId){
+        if(!commentId){
+            return false
+        }
+
+        return await commentRepository.delete(commentId)
+    }
+
     static async getAllStrategyComments(strategy_name){
         try{
             const text = "SELECT b.id AS base_id, b.username AS base_user,\
@@ -74,32 +91,6 @@ module.exports = class comment_services{
         }
     }
 
-
-
-    static async getCommentById(strategy_name, id){
-        try{
-            const text = "SELECT id, c.username AS author, c.data_comentario AS date,\
-            c.texto AS text, c.comentario_base AS base_comment\
-            FROM comentario c\
-            WHERE c.estrategia = $1 AND c.id = $2";
-            
-            const values = [strategy_name, id];
-
-            const db_comment = await db_client.query(text, values);
-
-            if(db_comment.rowCount === 0){
-                return null;
-            }
-            
-            return db_comment.rows[0];
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-
-
-
     static async getCommentReplies(id){
         try{
             const text = "SELECT c.id, c.username AS author, c.data_comentario AS date, c.texto AS text\
@@ -132,21 +123,21 @@ module.exports = class comment_services{
         }
         catch(err){
             console.log(err);
+            return false
         }
     }
 
 
 
-    static async replyCommentStrategy(strategy_name, comment_base_id, author, reply_text){
+    static async replyCommentStrategy(id, strategyId, author, replyText){
         try{
-            const text = "INSERT INTO comentario (username, estrategia, texto, comentario_base)\
-            VALUES ($1, $2, $3, $4)\
-            RETURNING id, estrategia AS strategy, username AS author, data_comentario AS date, texto AS text, comentario_base AS base_comment";
-            const values = [author, strategy_name, reply_text, comment_base_id];
-
-            const rowInserted = await db_client.query(text, values);
-
-            return rowInserted.rows[0];
+            const reply = await commentRepository.insert({
+                strategy_id: strategyId,
+                username: author,
+                text: replyText,
+                base_comment: id
+            })
+            return reply
         }
         catch(err){
             console.log(err);
@@ -154,56 +145,11 @@ module.exports = class comment_services{
     }
 
 
+    static async updateCommentText(id, textEdit){
+        const commentEdit = await commentRepository.update(id, {
+            text: textEdit
+        })
 
-    static async commentExists(id){
-        try{
-            const text = "SELECT id FROM comentario\
-            WHERE id = $1";
-            const values = [id];
-
-            const db_comment = await db_client.query(text, values);
-
-            return db_comment.rowCount > 0;
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-
-
-
-    static async deleteCommentById(id){
-        try{
-            const text = "DELETE FROM comentario\
-            WHERE id = $1\
-            RETURNING id, username AS author, estrategia AS strategy,\
-            data_comentario AS date, texto AS text, comentario_base AS base_comment";
-            const values = [id];
-
-            const rowRemoved = await db_client.query(text, values);
-
-            return rowRemoved.rows[0];
-        }
-        catch(err){
-            console.log(err);
-        }
-    }
-
-
-
-    static async updateCommentText(id, new_text){
-        try{
-            const text = "UPDATE comentario SET texto = $1 WHERE id = $2\
-            RETURNING id, username AS author, estrategia AS strategy,\
-            data_comentario AS date, texto AS text, comentario_base AS base_comment";
-            const values = [new_text, id];
-
-            const db_comment_updated = await db_client.query(text, values);
-
-            return db_comment_updated.rows[0];
-        }
-        catch(err){
-            console.log(err);
-        }
+        return !!commentEdit[0]
     }
 }
