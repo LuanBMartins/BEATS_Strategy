@@ -1,7 +1,28 @@
 /* eslint-disable */
 const db_client = require('../dbconfig').db_client;
+const userRepository = require('../infra/repositories/user-repository')
+const bcrypt = require('bcrypt')
 
 module.exports = class profile_services{
+    static async readUser(email){
+        if(!email){
+            return false
+        }
+        const user = await userRepository.findWithEmail(email)
+        return user
+    }
+
+    static async updateProfile(email, payload){
+        if(!email) return false
+        
+        if(payload.senha){
+            payload.senha = await bcrypt.hash(payload.senha, 10)
+        }else {
+            delete payload.senha
+        }
+        return await userRepository.updateProfileWithEmail(email, payload)
+    }
+
     static async getUser(identifier){
         try{
             const text = "SELECT username, email, senha AS password,\
