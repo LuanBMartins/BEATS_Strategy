@@ -88,8 +88,8 @@ exports.deleteRequest = (protocol) => {
   })
 }
 
-exports.getById = (id) => {
-  return db.solicitacao.findOne({
+exports.getById = async (id) => {
+  const request = await db.solicitacao.findOne({
     where: {
       strategy_id: id
     },
@@ -97,6 +97,8 @@ exports.getById = (id) => {
       model: db.architecture_strategy
     }
   })
+
+  return request.get({ plain: true })
 }
 
 exports.update = (protocol, vote) => {

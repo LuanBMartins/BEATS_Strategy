@@ -1,7 +1,9 @@
 /* eslint-disable */
 const requestRepository = require('../infra/repositories/requests-repository');
 const strategyRepository = require('../infra/repositories/architecture-strategy-repository')
-
+const imagesRepository = require('../infra/repositories/strategy-images-repository');
+const aliasesRepository = require('../infra/repositories/aliases-repository');
+const { getImageFile } = require('./utils/getFile');
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
 
@@ -59,7 +61,17 @@ module.exports = class request_services{
     }
 
     static async getRequestsById(id){
-        return requestRepository.getById(id)
+        const request = await requestRepository.getById(id)
+        const aliases = await aliasesRepository.findByStrategy(id)
+        const imagesByStrategy = await imagesRepository.findById(id)
+        const images = await Promise.all(imagesByStrategy.map(async (value) => {
+            return {
+                file: await getImageFile(value.origin)
+            }
+        }))
+        request.architecture_strategy.aliases = aliases || []
+        request.architecture_strategy.images = images || []
+        return request
     }
 
     static async insertAddRequestForm(n_protocol, proposed_strategy){

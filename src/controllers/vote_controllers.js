@@ -41,7 +41,6 @@ module.exports = class vote_controllers{
 
 
     static async adminVote(req, res, next){
-        console.log("🚀 ~ file: vote_controllers.js:44 ~ vote_controllers ~ adminVote ~ req:", req.body)
         if(!req.params.protocol){ 
             return res.status(500)
         }
