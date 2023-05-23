@@ -45,6 +45,12 @@ module.exports = (sequelize, DataTypes) => {
         fieldName: 'username'
       }
     })
+
+    user.hasMany(models.suggestion, {
+      foreignKey: {
+        fieldName: 'username'
+      }
+    })
   }
 
   return user
