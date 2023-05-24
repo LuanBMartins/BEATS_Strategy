@@ -1,8 +1,7 @@
-/* eslint-disable */
 const strategyServices = require('../services/strategy_services')
 
 module.exports = class strategyControllers {
-  static async searchStrategies(req, res, next) {
+  static async searchStrategies (req, res, next) {
     const attributes = {
       c: false,
       i: false,
@@ -12,16 +11,15 @@ module.exports = class strategyControllers {
       acc: false,
       nr: false
     }
-    
 
     if (req.query.attr) {
       const attributesArray = Array.isArray(req.query.attr) ? req.query.attr : [req.query.attr]
-      const invalidAttributes = attributesArray.filter(attr =>  !(attr in attributes))
+      const invalidAttributes = attributesArray.filter(attr => !(attr in attributes))
 
       if (invalidAttributes.length > 0) {
-        return res.status(400).send({ 
+        return res.status(400).send({
           success: false,
-          message: `infosec attribute '${invalidAttributes[0]}' does not exist` 
+          message: `infosec attribute '${invalidAttributes[0]}' does not exist`
         })
       }
 
@@ -31,7 +29,7 @@ module.exports = class strategyControllers {
     }
 
     const name = req.query.name ? req.query.name : ''
-    let strategyType = req.query.type ? req.query.type.toUpperCase() : ''
+    const strategyType = req.query.type ? req.query.type.toUpperCase() : ''
 
     let type = -1
     switch (strategyType) {
@@ -51,24 +49,24 @@ module.exports = class strategyControllers {
     return res.status(200).send({ strategies })
   }
 
-  static async getStrategy(req, res, next) {
+  static async getStrategy (req, res, next) {
     try {
       const id = req.params.id
-      let strategy = await strategyServices.getStrategiesById(id)
+      const strategy = await strategyServices.getStrategiesById(id)
       if (!strategy) {
-        return res.status(404).send({ 
+        return res.status(404).send({
           success: false,
-          error_message: `strategy does not exist!` 
+          error_message: 'strategy does not exist!'
         })
       }
-      
+
       return res.status(200).send(strategy)
     } catch (error) {
       return res.status(500).send('Server Error!')
     }
   }
 
-  static async listStrategyImagesName(req, res, next) {
+  static async listStrategyImagesName (req, res, next) {
     const name = req.params.name
 
     const strategy = await strategyServices.getStrategyByName(name)
@@ -81,7 +79,7 @@ module.exports = class strategyControllers {
     return res.status(200).send({ images_name: imgs })
   }
 
-  static async getStrategyImageByName(req, res, next) {
+  static async getStrategyImageByName (req, res, next) {
     const name = req.params.name
     const imageName = req.params.imagename
 

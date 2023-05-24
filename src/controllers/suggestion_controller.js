@@ -1,4 +1,3 @@
-
 const SuggestionService = require('../services/suggestion-services')
 const schema = require('./schema/index')
 

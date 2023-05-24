@@ -26,7 +26,6 @@ module.exports = class request_services{
 
     static async createStrategyRequest(strategy, files, auth){
         try {
-
             delete strategy.images
             strategy.type = strategy.type == 'tactic' ? 1 : 0
             strategy.images = files.map(file => {
@@ -38,22 +37,19 @@ module.exports = class request_services{
             if(strategy.aliases){
                 strategy.aliases = JSON.parse(strategy.aliases).map(name => ({ name }))
             }
-        
             const {dataValues: strategyCreate} = await strategyRepository.create({...strategy, username_creator: auth.username})
             if(!strategyCreate){
                 return false
             }
+
             const requestCreate = await requestRepository.create({
                 username: auth.username,
                 tipo_solicitacao: 1,
                 estado: 0,
                 strategy_id: strategyCreate.id
             })
-            if(!requestCreate){
-                return false
-            }
 
-            return true
+            return { requestCreate, strategyCreate }
         } catch (error) {
             console.log("🚀 ~ file: request_services.js:27 ~ request_services ~ createStrategyRequest ~ error:", error)
             return false
