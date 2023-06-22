@@ -1,34 +1,10 @@
 
 const dbClient = require('../dbconfig').db_client
-// const FuzzySearch = require('fuzzy-search')
 const fs = require('fs').promises
 const strategiesRepository = require('../infra/repositories/architecture-strategy-repository')
 const imagesRepository = require('../infra/repositories/strategy-images-repository')
 const aliasesRepository = require('../infra/repositories/aliases-repository')
 const { getImageFile } = require('./utils/getFile')
-
-// function fuzzySearchStrategiesName (strategies, name) {
-//   let strategies_names = []
-
-//   strategies_names = strategies.flatMap((strategy, index) => {
-//     const arr = strategy.aliases.map((alias) => { return { name: alias, index } })
-//     arr.push({ name: strategy.name, index })
-//     return arr
-//   })
-//   b
-//   const searcher = new FuzzySearch(strategies_names, ['name'], {
-//     sort: true
-//   })
-
-//   strategies_names = searcher.search(name)
-
-//   const set = new Set()
-//   strategies_names.forEach((strategy) => {
-//     set.add(strategies[strategy.index])
-//   })
-
-//   return Array.from(set.keys())
-// }
 
 module.exports = class strategyServices {
   static async getAllStrategies () {
