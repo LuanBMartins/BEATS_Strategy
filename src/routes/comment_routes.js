@@ -1,21 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const comment_controller = require("../controllers/comment_controllers");
+const express = require('express')
+const router = express.Router()
+const commentController = require('../controllers/comment_controllers')
 
-const middlewares = require('../middlewares');
+const middlewares = require('../middlewares')
 
-router.get('/strategies/:name/comments', comment_controller.getComments);
-router.get('/strategies/:name/comments/:id', comment_controller.getComment);
+// router.get('/strategies/:name/comments', commentController.getComments)
+// router.get('/strategies/:name/comments/:id', commentController.getComment)
 
-router.post('/strategies/:name/comments', middlewares.assertBodyFields(['text']),
-            middlewares.authorizeUser([0, 1, 2]), comment_controller.postComment);
-router.post('/strategies/:name/comments/:id', middlewares.assertBodyFields(['text']),
-            middlewares.authorizeUser([0, 1, 2]), comment_controller.postReplyComment);
+router.get('/strategies/:id/comments', commentController.readComments)
+router.get('/strategies/comment/:id', commentController.readComment)
 
-router.delete('/strategies/:name/comments/:id', middlewares.authorizeUser([0, 1, 2]),
-              comment_controller.deleteComment);
+router.post('/strategies/:id/comments', middlewares.assertBodyFields(['text']),
+  middlewares.authorizeUser([0, 1, 2]), commentController.postComment)
+router.post('/strategies/:strategyId/comments/:id', middlewares.assertBodyFields(['text']),
+  middlewares.authorizeUser([0, 1, 2]), commentController.postReplyComment)
 
-router.put('/strategies/:name/comments/:id', middlewares.authorizeUser([0, 1, 2]),
-           middlewares.assertBodyFields(['text']), comment_controller.editComment);
+router.delete('/strategies/:strategyId/comments/:id', middlewares.authorizeUser([0, 1, 2]),
+  commentController.deleteComment)
 
-module.exports = router;
+router.put('/strategies/:strategyId/comments/:id', middlewares.authorizeUser([0, 1, 2]),
+  middlewares.assertBodyFields(['text']), commentController.editComment)
+
+module.exports = router

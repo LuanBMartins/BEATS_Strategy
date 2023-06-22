@@ -1,5 +1,9 @@
-const repository = require('../infra/repositories/requests-repository');
-
+/* eslint-disable */
+const requestRepository = require('../infra/repositories/requests-repository');
+const strategyRepository = require('../infra/repositories/architecture-strategy-repository')
+const imagesRepository = require('../infra/repositories/strategy-images-repository');
+const aliasesRepository = require('../infra/repositories/aliases-repository');
+const { getImageFile } = require('./utils/getFile');
 const db_client = require('../dbconfig').db_client;
 const fs = require('fs').promises;
 
@@ -20,9 +24,50 @@ module.exports = class request_services{
         }
     }
 
+    static async createStrategyRequest(strategy, files, auth){
+        try {
+            delete strategy.images
+            strategy.type = strategy.type == 'tactic' ? 1 : 0
+            strategy.images = files.map(file => {
+                return {
+                    origin: file.filename
+                }
+            })
+
+            if(strategy.aliases){
+                strategy.aliases = JSON.parse(strategy.aliases).map(name => ({ name }))
+            }
+            const {dataValues: strategyCreate} = await strategyRepository.create({...strategy, username_creator: auth.username})
+            if(!strategyCreate){
+                return false
+            }
+
+            const requestCreate = await requestRepository.create({
+                username: auth.username,
+                tipo_solicitacao: 1,
+                estado: 0,
+                strategy_id: strategyCreate.id
+            })
+
+            return { requestCreate, strategyCreate }
+        } catch (error) {
+            console.log("🚀 ~ file: request_services.js:27 ~ request_services ~ createStrategyRequest ~ error:", error)
+            return false
+        }
+    }
 
     static async getRequestsById(id){
-        return repository.getById(id)
+        const request = await requestRepository.getById(id)
+        const aliases = await aliasesRepository.findByStrategy(id)
+        const imagesByStrategy = await imagesRepository.findById(id)
+        const images = await Promise.all(imagesByStrategy.map(async (value) => {
+            return {
+                file: await getImageFile(value.origin)
+            }
+        }))
+        request.architecture_strategy.aliases = aliases || []
+        request.architecture_strategy.images = images || []
+        return request
     }
 
     static async insertAddRequestForm(n_protocol, proposed_strategy){
@@ -40,20 +85,8 @@ module.exports = class request_services{
 
     static async getRequestByProtocolNumber(request_protocol_number){
         try{
-            const text = "SELECT tipo_solicitacao AS type, estado AS state,\
-            data_solicitacao AS application_date, username AS author,\
-            administrador AS administrator, voto_admin AS admin_vote,\
-            texto_rejeicao AS rejection_text\
-            FROM solicitacao WHERE nro_protocolo = $1";
-            const values = [request_protocol_number];
-
-            const db_request = await db_client.query(text, values);
-
-            if(db_request.rowCount === 0){
-                return null;
-            }
-
-            return db_request.rows[0];
+            const requestStragey = await requestRepository.getRequestsByProtocol(request_protocol_number)
+            return requestStragey.get({plain: true})
         }
         catch(err){
             console.log(err);
@@ -62,40 +95,23 @@ module.exports = class request_services{
 
 
 
-    static async updateRequestState(request_protocol_number){
-        try{
-            const text = "UPDATE solicitacao SET estado = 3 WHERE nro_protocolo = $1";
-            const values = [request_protocol_number];
-
-            const db_request = await db_client.query(text, values);
-        }
-        catch(err){
-            console.log(err);
-        }
+    static async updateRequestState(id, strategy){
+        const requestUpdate = await strategyRepository.update(id, strategy)
+        return !!requestUpdate[0]
     }
 
-
+    static async getRequestByProtocol(protocol){
+        const requests = await requestRepository.getRequestsByProtocol(protocol)
+        return requests;
+    }
 
     static async getRequestsByUser(username){
-        try{
-            const text = "SELECT nro_protocolo AS protocol_number, data_solicitacao as date_required, tipo_solicitacao AS type, estado AS state,\
-            texto_rejeicao AS rejection_text, estrategia_referente AS relating_strategy, nro_recorrencia AS recurrence_number,\
-            nro_aceitar AS accept_count, nro_aceitar_com_sugestoes AS accept_with_suggestions_count, nro_rejeitar AS reject_count\
-            FROM solicitacao LEFT JOIN votacao_conselho ON nro_protocolo = nro_protocolo_solicitacao\
-            WHERE username = $1";
-            const values = [username];
-
-            const db_requests = await db_client.query(text, values);
-
-            return db_requests.rows;
-        }
-        catch(err){
-            console.log(err);
-        }
+        const requests = await requestRepository.getRequestsByUsername(username)
+        return requests;
     }
 
     static async getRequetsWaitingStatus(){
-        const requests = await repository.getRequetsWaitingStatus()
+        const requests = await requestRepository.getRequetsWaitingStatus()
         return requests
     }
 
@@ -105,7 +121,7 @@ module.exports = class request_services{
             return false
         }
         
-        const deleteResult = await repository.deleteRequest(protocol)
+        const deleteResult = await requestRepository.deleteRequest(protocol)
         return {
             delete: !!deleteResult
         }

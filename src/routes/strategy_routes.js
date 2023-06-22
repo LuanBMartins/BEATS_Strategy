@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const strategy_controller = require("../controllers/strategy_controllers");
+const express = require('express')
+const router = express.Router()
+const strategyController = require('../controllers/strategy_controllers')
 
-router.get('/strategies', strategy_controller.searchStrategies);
-router.get('/strategies/:name', strategy_controller.getStrategy);
-router.get('/strategies/:name/images', strategy_controller.listStrategyImagesName);
-router.get('/strategies/:name/images/:imagename', strategy_controller.getStrategyImageByName);
+router.get('/strategies', strategyController.searchStrategies)
+router.get('/strategies/:id', strategyController.getStrategy)
+router.get('/strategies/:name/images', strategyController.listStrategyImagesName)
+router.get('/strategies/:name/images/:imagename', strategyController.getStrategyImageByName)
 
-module.exports = router;
+module.exports = router

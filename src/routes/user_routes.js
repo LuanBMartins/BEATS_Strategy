@@ -1,13 +1,19 @@
-const express = require("express");
-const router = express.Router();
-const user_controller = require("../controllers/user_controllers");
+const express = require('express')
+const router = express.Router()
+const userController = require('../controllers/user_controllers')
 
-const middlewares = require('../middlewares');
+const middlewares = require('../middlewares')
 
 router.post('/register', middlewares.assertBodyFields(['username', 'email', 'password', 'github']),
-user_controller.registerUser);
+  userController.registerUser)
 
-router.post('/login', middlewares.assertBodyFields(['username', 'password']), 
-user_controller.authenticateUser);
+router.post('/login', middlewares.assertBodyFields(['username', 'password']),
+  userController.authenticateUser)
 
-module.exports = router;
+router.get('/profile/:email', middlewares.authorizeUser([0, 1, 2]),
+  userController.readProfile)
+
+router.put('/profile/update/:email', middlewares.authorizeUser([0, 1, 2]),
+  userController.updateProfile)
+
+module.exports = router

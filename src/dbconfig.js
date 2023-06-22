@@ -1,19 +1,19 @@
-const { Client } = require("pg")
+const { Client } = require('pg')
 
-const db_client = new Client();
+const dbClient = new Client()
 
-function db_connect(){
-    db_client.connect((err) => {
-        if(err){
-            console.log(err);
-            console.log('FATAL ERROR: Unable to connect to database');
-            process.exit(1);
-        }
-        console.log("Database connected!");
-    });
+function dbConnect () {
+  dbClient.connect((err) => {
+    if (err) {
+      console.log(err)
+      console.log('FATAL ERROR: Unable to connect to database')
+      process.exit(1)
+    }
+    console.log('Database connected!')
+  })
 }
 
 module.exports = {
-    db_client,
-    db_connect
-};
+  db_client: dbClient,
+  db_connect: dbConnect
+}
