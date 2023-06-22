@@ -6,4 +6,5 @@ src/node_modules
 .env
 node_modules/
 
+coverage/
 src/local_storage
