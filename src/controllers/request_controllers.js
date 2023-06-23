@@ -1,11 +1,6 @@
 const requestServices = require('../services/request_services')
 
 module.exports = class requestControllers {
-  static async postAddRequestInsertDB (req, res, next) {
-    req.request_inserted = await requestServices.insertAddRequest(req.user_info.username)
-    next()
-  }
-
   static async postAddRequestSaveJSON (req, res, next) {
     // eslint-disable-next-line camelcase
     const { body, user_info } = req

@@ -1,33 +1,6 @@
-const strategyServices = require('../services/strategy_services')
 const commentServices = require('../services/comment_services')
 
 module.exports = class commentControllers {
-  static async getComment (req, res, next) {
-    const strategyName = req.params.name
-    const commentId = req.params.id
-
-    const regex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
-    if (!regex.test(commentId)) {
-      return res.status(400).send({ error_message: 'comment id is not in UUID format' })
-    }
-
-    if (!await strategyServices.strategyExists(strategyName)) {
-      return res.status(404).send({ error_message: `strategy ${strategyName} does not exist` })
-    }
-
-    const comment = await commentServices.getCommentById(strategyName, commentId)
-    if (!comment) {
-      return res.status(404).send({ error_message: 'this comment does not exist for this strategy' })
-    }
-
-    const replies = await commentServices.getCommentReplies(commentId)
-    if (replies.length > 0 || comment.base_comment === null) {
-      return res.status(200).send({ id: comment.id, author: comment.author, date: comment.date, text: comment.text, replies })
-    }
-
-    return res.status(200).send(comment)
-  }
-
   static async readComments (req, res) {
     try {
       const { id } = req.params
@@ -60,16 +33,6 @@ module.exports = class commentControllers {
       console.log('🚀 ~ file: comment_controllers.js:43 ~ comment_controllers ~ readComment ~ error:', error)
       return res.status(500).send()
     }
-  }
-
-  static async getComments (req, res, next) {
-    const strategyName = req.params.name
-
-    if (!await strategyServices.strategyExists(strategyName)) {
-      return res.status(404).send({ error_message: `strategy '${strategyName}' does not exist` })
-    }
-
-    return res.status(200).send({ comments: await commentServices.getAllStrategyComments(strategyName) })
   }
 
   static async postComment (req, res) {
