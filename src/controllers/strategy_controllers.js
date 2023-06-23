@@ -65,34 +65,4 @@ module.exports = class strategyControllers {
       return res.status(500).send('Server Error!')
     }
   }
-
-  static async listStrategyImagesName (req, res, next) {
-    const name = req.params.name
-
-    const strategy = await strategyServices.getStrategyByName(name)
-    if (!strategy) {
-      return res.status(404).send({ error_message: `strategy '${name}' does not exist` })
-    }
-
-    const imgs = await strategyServices.getStrategyImagesNames(strategy.images_path)
-
-    return res.status(200).send({ images_name: imgs })
-  }
-
-  static async getStrategyImageByName (req, res, next) {
-    const name = req.params.name
-    const imageName = req.params.imagename
-
-    const strategy = await strategyServices.getStrategyByName(name)
-    if (!strategy) {
-      return res.status(404).send({ error_message: `strategy '${name}' does not exist` })
-    }
-
-    const imgs = await strategyServices.getStrategyImagesNames(strategy.images_path)
-    if (!imgs.includes(imageName)) {
-      return res.status(404).send({ error_message: `strategy does not have image '${imageName}'` })
-    }
-
-    return res.status(200).sendFile('./public/strategies documentation/' + strategy.images_path + imageName, { root: '.' })
-  }
 }

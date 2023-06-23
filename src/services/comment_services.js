@@ -1,4 +1,3 @@
-const dbClient = require('../dbconfig').db_client
 const commentRepository = require('../infra/repositories/comment-repository')
 
 module.exports = class commentServices {
@@ -35,74 +34,6 @@ module.exports = class commentServices {
     }
 
     return await commentRepository.delete(commentId)
-  }
-
-  static async getAllStrategyComments (strategyName) {
-    try {
-      // eslint-disable-next-line no-multi-str
-      const text = 'SELECT b.id AS base_id, b.username AS base_user,\
-            b.data_comentario AS base_date, b.texto AS base_text,\
-            r.id AS reply_id, r.username AS reply_user,\
-            r.data_comentario AS reply_date, r.texto AS reply_text\
-            FROM comentario b\
-            LEFT JOIN comentario r ON b.id = r.comentario_base\
-            WHERE b.estrategia = $1 AND b.comentario_base IS NULL ORDER BY base_date, reply_date'
-
-      const values = [strategyName]
-      const dbComments = await dbClient.query(text, values)
-
-      const comments = {}
-
-      dbComments.rows.forEach(comment => {
-        if (comments[comment.base_id] === undefined) {
-          comments[comment.base_id] = {
-            id: comment.base_id,
-            author: comment.base_user,
-            date: comment.base_date,
-            text: comment.base_text,
-            replies: []
-          }
-
-          if (comment.reply_id != null) {
-            comments[comment.base_id].replies = [{
-              id: comment.reply_id,
-              author: comment.reply_user,
-              date: comment.reply_date,
-              text: comment.reply_text
-            }]
-          }
-        } else {
-          comments[comment.base_id].replies.push({
-            id: comment.reply_id,
-            author: comment.reply_user,
-            date: comment.reply_date,
-            text: comment.reply_text
-          })
-        }
-      })
-
-      return Object.values(comments)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  static async getCommentReplies (id) {
-    try {
-      // eslint-disable-next-line no-multi-str
-      const text = 'SELECT c.id, c.username AS author, c.data_comentario AS date, c.texto AS text\
-            FROM comentario c\
-            WHERE c.comentario_base = $1\
-            ORDER BY date'
-
-      const values = [id]
-
-      const dbReplies = await dbClient.query(text, values)
-
-      return dbReplies.rows
-    } catch (err) {
-      console.log(err)
-    }
   }
 
   static async commentStrategy (strategyId, author, commentText) {
