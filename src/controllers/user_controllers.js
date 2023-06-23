@@ -1,6 +1,7 @@
 const userService = require('../services/user_services')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const validate = require('./utils/validate')
 
 module.exports = class ProfileControllers {
   static async readProfile (req, res) {
@@ -27,7 +28,7 @@ module.exports = class ProfileControllers {
         return res.status(400).send({ success: false, message: 'Invalid Params!' })
       }
       const profile = req.body
-      const validPayload = ProfileControllers.validate(['username', 'email', 'senha', 'perfil_github'], profile)
+      const validPayload = validate(['username', 'email', 'senha', 'perfil_github'], profile)
 
       if (validPayload.senha && validPayload.senha.length < 12) {
         return res.status(400).send({ success: false, message: 'password must contain 12 digits' })
@@ -92,25 +93,5 @@ module.exports = class ProfileControllers {
       username,
       user_type: ['Regular User', 'Council Member', 'Administrator'][user.user_type]
     })
-  }
-
-  /**
-     * @abstract Remove campos indesejados
-     * @param fields
-     * @param object
-     * @returns
-     */
-  static validate (fields, object) {
-    if (!object) {
-      return {}
-    }
-    const newObjet = {}
-    Object.getOwnPropertyNames(object)
-      .filter(key => fields.includes(key))
-      .forEach(key => {
-        // eslint-disable-next-line no-return-assign
-        return newObjet[key] = object[key]
-      })
-    return newObjet
   }
 }

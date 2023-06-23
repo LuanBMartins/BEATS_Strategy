@@ -66,24 +66,4 @@ module.exports = class SuggestionController {
       return res.status(500).send({ success: false, message: 'Server Error!' })
     }
   }
-
-  /**
-       * @abstract Remove campos indesejados
-       * @param fields
-       * @param object
-       * @returns
-       */
-  static validate (fields, object) {
-    if (!object) {
-      return {}
-    }
-    const newObjet = {}
-    Object.getOwnPropertyNames(object)
-      .filter(key => fields.includes(key))
-      .forEach(key => {
-        // eslint-disable-next-line no-return-assign
-        return newObjet[key] = object[key]
-      })
-    return newObjet
-  }
 }
