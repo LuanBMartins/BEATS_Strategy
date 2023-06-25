@@ -5,7 +5,7 @@
        * @returns
        */
 
-export default (fields, object) => {
+module.exports = (fields, object) => {
   if (!object) {
     return {}
   }

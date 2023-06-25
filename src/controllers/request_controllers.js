@@ -49,7 +49,7 @@ module.exports = class requestControllers {
       const { id } = req.params
 
       if (!id || !parseInt(id)) {
-        return res.status(400).send('Paranetro inválido!')
+        return res.status(400).send('Parametro inválido!')
       }
       const request = await requestServices.getRequestsById(id)
       if (!request) {
@@ -58,7 +58,7 @@ module.exports = class requestControllers {
       return res.status(200).send({ request })
     } catch (error) {
       console.log('🚀 ~ file: request_controllers.js:89 ~ request_controllers ~ readRequestById ~ error:', error)
-      return res.status(400).send('Paranetro inválido!')
+      return res.status(500).send('Server Error!')
     }
   }
 

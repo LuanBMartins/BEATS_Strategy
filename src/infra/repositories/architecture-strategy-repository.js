@@ -74,7 +74,7 @@ function fieldValidate (querys, fields) {
       validObjet[key] = fieldQuerysFilters(value)[key] || value
     }
   }
-  return validObjet || {}
+  return validObjet
 }
 
 /**

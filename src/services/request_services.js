@@ -4,8 +4,6 @@ const strategyRepository = require('../infra/repositories/architecture-strategy-
 const imagesRepository = require('../infra/repositories/strategy-images-repository');
 const aliasesRepository = require('../infra/repositories/aliases-repository');
 const { getImageFile } = require('./utils/getFile');
-const db_client = require('../dbconfig').db_client;
-const fs = require('fs').promises;
 
 module.exports = class request_services {
 
@@ -55,30 +53,10 @@ module.exports = class request_services {
         return request
     }
 
-    static async insertAddRequestForm(n_protocol, proposed_strategy){
-        try{
-            const data = JSON.stringify(proposed_strategy);
-            await fs.mkdir(process.env.PATH_REQUEST + `${n_protocol}`, { recursive: true });
-            await fs.writeFile(process.env.PATH_REQUEST + `${n_protocol}/form.json`, data);
-        }   
-        catch(err){
-            console.log("🚀 ~ file: request_services.js:29 ~ request_services ~ insertAddRequestForm ~ err", err)   
-        }
-    }
-
-
-
     static async getRequestByProtocolNumber(request_protocol_number){
-        try{
-            const requestStragey = await requestRepository.getRequestsByProtocol(request_protocol_number)
-            return requestStragey.get({plain: true})
-        }
-        catch(err){
-            console.log(err);
-        }
+        const requestStragey = await requestRepository.getRequestsByProtocol(request_protocol_number)
+        return requestStragey.get({plain: true})
     }
-
-
 
     static async updateRequestState(id, strategy){
         const requestUpdate = await strategyRepository.update(id, strategy)

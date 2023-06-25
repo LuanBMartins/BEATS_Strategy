@@ -41,6 +41,7 @@ module.exports = class profileServices {
       return dbUser.rows[0]
     } catch (err) {
       console.log(err)
+      return false
     }
   }
 
@@ -61,6 +62,7 @@ module.exports = class profileServices {
         return null
       }
       console.log(err)
+      return false
     }
   }
 
@@ -72,6 +74,7 @@ module.exports = class profileServices {
       return dbCouncilMembersNumber.rows[0].number_council_members
     } catch (err) {
       console.log(err)
+      return false
     }
   }
 }
