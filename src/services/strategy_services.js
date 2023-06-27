@@ -1,4 +1,3 @@
-const fs = require('fs').promises
 const strategiesRepository = require('../infra/repositories/architecture-strategy-repository')
 const imagesRepository = require('../infra/repositories/strategy-images-repository')
 const aliasesRepository = require('../infra/repositories/aliases-repository')
@@ -21,24 +20,5 @@ module.exports = class strategyServices {
     }))
 
     return { ...strategy, images, aliases }
-  }
-
-  static async getStrategyDocumentation (documentationPath) {
-    try {
-      const data = await fs.readFile(process.env.PATH_REQUEST + documentationPath)
-      const documentation = JSON.parse(data)
-
-      return documentation
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  static async getStrategyImagesNames (imagesPath) {
-    try {
-      return await fs.readdir(process.env.PATH_DOCUMENTATION + imagesPath)
-    } catch (err) {
-      console.log(err)
-    }
   }
 }
