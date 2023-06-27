@@ -5,7 +5,7 @@
        * @returns
        */
 
-export default (fields, object) => {
+module.exports = (fields, object) => {
   if (!object) {
     return {}
   }
@@ -14,7 +14,7 @@ export default (fields, object) => {
     .filter(key => fields.includes(key))
     .forEach(key => {
       // eslint-disable-next-line no-return-assign
-      return newObjet[key] = object[key]
+      newObjet[key] = object[key]
     })
   return newObjet
 }

@@ -22,16 +22,15 @@ process.on('SIGINT', (code) => {
 const PORT = process.env.PORT || 3000
 const app = express()
 
+const app1 = express() // Compliant
+app1.disable('x-powered-by')
+
+const helmet = require('helmet')
+app.use(helmet.hidePoweredBy())
+
 app.listen(PORT, () => {
   console.log(`SERVER: listening on ${PORT}`)
 })
-
-/* app.use((req, res, next) =>{
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
-    app.use(cors());
-    next();
-}); */
 
 app.use(cors())
 app.use(express.json())
