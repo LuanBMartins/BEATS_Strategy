@@ -1,6 +1,6 @@
-projectKey=Com-teste
+projectKey=jest
 serverUrl=http://localhost:9000
 serverVersion=10.1.0.73491
-dashboardUrl=http://localhost:9000/dashboard?id=Com-teste
-ceTaskId=AYj00TqFW42_cFUaSU59
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYj00TqFW42_cFUaSU59
+dashboardUrl=http://localhost:9000/dashboard?id=jest
+ceTaskId=AYj8l1DouxWPar3bBQPK
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYj8l1DouxWPar3bBQPK
