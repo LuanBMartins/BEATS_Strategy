@@ -14,7 +14,7 @@ module.exports = (fields, object) => {
     .filter(key => fields.includes(key))
     .forEach(key => {
       // eslint-disable-next-line no-return-assign
-      return newObjet[key] = object[key]
+      newObjet[key] = object[key]
     })
   return newObjet
 }

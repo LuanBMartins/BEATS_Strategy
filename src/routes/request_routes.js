@@ -13,6 +13,9 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}` + '_' + file.originalname)
+  },
+  limits: {
+    fileSize: 8000000 // Compliant: 8MB
   }
 })
 

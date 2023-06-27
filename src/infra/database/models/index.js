@@ -25,9 +25,9 @@ fs
     db[model.name] = model
   })
 
-Object.keys(db).forEach(async (modelName) => {
+Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
-    await db[modelName].associate(db)
+    db[modelName].associate(db)
   }
 })
 
